@@ -4,14 +4,14 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"cli": "node --loader @esbuild-kit/esm-loader ./src/lib/server/cli/index.ts",
+		"cli": "npx vite-node ./src/lib/server/cli/index.ts",
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint .",
+		"lint": "prettier --write . && eslint --fix --no-cache .",
 		"test:unit": "vitest",
 		"test": "pnpm run test:unit -- --run && pnpm run test:e2e",
 		"test:e2e": "playwright test",
@@ -21,7 +21,8 @@
 		"db:studio": "drizzle-kit studio",
 		"build-storybook": "storybook build",
 		"debug": "vite --debug",
-		"fix-readme": "node --loader @esbuild-kit/esm-loader ./scripts/fix-readme.ts"
+		"fix-readme": "npx vite-node ./scripts/fix-readme.ts",
+		"script": "npx vite-node ./scripts/index.ts"
 	},
 	"devDependencies": {
 		"@chromatic-com/storybook": "^3.2.3",
@@ -44,6 +45,7 @@
 		"@types/fuzzy-search": "^2.1.5",
 		"@types/multiparty": "^4.2.1",
 		"@types/node": "^22.10.4",
+		"@types/pg": "^8.11.11",
 		"@types/uuid": "^10.0.0",
 		"concurrently": "^9.1.2",
 		"drizzle-kit": "^0.30.1",
@@ -72,7 +74,9 @@
 		"@oslojs/encoding": "^1.1.0",
 		"@trpc/client": "11.0.0-rc.682",
 		"@trpc/server": "11.0.0-rc.682",
+		"@types/adm-zip": "^0.5.7",
 		"@types/proper-lockfile": "^4.1.4",
+		"adm-zip": "^0.5.16",
 		"bootstrap": "^5.3.3",
 		"busboy": "^1.6.0",
 		"check-password-strength": "^2.0.10",
@@ -93,11 +97,14 @@
 		"googleapis": "^144.0.0",
 		"math": "github:tsaxking/calculations",
 		"multiparty": "^4.2.3",
+		"pg": "^8.13.1",
 		"postgres": "^3.4.5",
 		"proper-lockfile": "^4.1.2",
 		"svelte-filepond": "^0.2.2",
 		"ts-utils": "github:tsaxking/global-ts-utilities",
 		"uuid": "^11.0.4",
+		"vite-node": "^3.0.4",
+		"yaml": "^2.7.0",
 		"zod": "^3.24.1"
 	}
 }
