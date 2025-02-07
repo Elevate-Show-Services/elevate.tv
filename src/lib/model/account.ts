@@ -11,20 +11,21 @@ import {
 } from 'drizzle-struct/front-end';
 import { Requests } from '$lib/utils/requests';
 import { browser } from '$app/environment';
+import { z } from 'zod';
 
 export namespace Account {
 	export const Account = new Struct({
 		name: 'account',
 		structure: {
 			username: 'string',
-			key: 'string',
-			salt: 'string',
+			// key: 'string',
+			// salt: 'string',
 			firstName: 'string',
 			lastName: 'string',
 			email: 'string',
 			picture: 'string',
-			verified: 'boolean',
-			verification: 'string'
+			verified: 'boolean'
+			// verification: 'string'
 		},
 		socket: sse,
 		browser
@@ -49,17 +50,17 @@ export namespace Account {
 
 	export type AccountNotificationData = StructData<typeof AccountNotification.data.structure>;
 
-	const self = new SingleWritable<typeof Account.data.structure>(
+	const self = new SingleWritable(
 		Account.Generator({
 			username: 'Guest',
-			key: '',
-			salt: '',
+			// key: '',
+			// salt: '',
 			firstName: 'Guest',
 			lastName: '',
 			email: '',
 			picture: '',
 			verified: false,
-			verification: '',
+			// verification: '',
 			id: 'guest',
 			updated: '0',
 			created: '0',
@@ -72,37 +73,25 @@ export namespace Account {
 	);
 
 	export const getSelf = (): SingleWritable<typeof Account.data.structure> => {
-		// attemptAsync(async () => {
-		// 	const data = (
-		// 		await Requests.get<
-		// 			PartialStructable<typeof Account.data.structure> & Structable<GlobalCols>
-		// 		>('/account/self', {
-		// 			expectStream: false
-		// 		})
-		// 	).unwrap();
-
-		// 	self.set(Account.Generator(data));
-		// });
-
+		attemptAsync(async () => {
+			const data = await Account.send('self', {}, Account.getZodSchema());
+			self.update((d) => {
+				d.set(data.unwrap()); // The program may not like this
+				return d;
+			});
+		});
 		return self;
 	};
 
-	const notifs = new DataArr(AccountNotification, []);
-
 	export const getNotifs = (limit: number, offset: number) => {
-		// attemptAsync(async () => {
-		// 	const data = (
-		// 		await Requests.get<
-		// 			(PartialStructable<typeof AccountNotification.data.structure> & Structable<GlobalCols>)[]
-		// 		>(`/account/notifications/${limit}/${offset}`, {
-		// 			expectStream: false
-		// 		})
-		// 	).unwrap();
-
-		// 	notifs.add(...data.map((n) => AccountNotification.Generator(n)));
-		// });
-
-		return notifs;
+		return AccountNotification.query(
+			'get-own-notifs',
+			{},
+			{
+				asStream: false,
+				satisfies: (d) => d.data.accountId === self.get().data.id
+			}
+		);
 	};
 
 	export const getUsersFromUniverse = (universe: string) => {
