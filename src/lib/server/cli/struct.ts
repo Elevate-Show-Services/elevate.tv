@@ -2,6 +2,7 @@
 import { attemptAsync } from 'ts-utils/check';
 import {
 	DataVersion,
+	globalCols,
 	Struct,
 	StructData,
 	type Blank,
@@ -9,11 +10,20 @@ import {
 } from 'drizzle-struct/back-end';
 import fs from 'fs';
 import path from 'path';
-import { select, selectFromTable, repeatPrompt, confirm, prompt, multiSelect } from './utils';
+import {
+	select,
+	selectFromTable,
+	repeatPrompt,
+	confirm,
+	prompt,
+	multiSelect,
+	viewTable
+} from './utils';
 import { checkStrType, returnType } from 'drizzle-struct/utils';
 import { Permissions } from '../structs/permissions';
 import { Universes } from '../structs/universe';
 import terminal from '../utils/terminal';
+import { Logs } from '../structs/log';
 
 export const openStructs = () =>
 	attemptAsync(async () => {
@@ -87,13 +97,31 @@ export const selectData = <T extends StructData>(
 		omit: options?.omit as string[]
 	});
 
+export const viewData = <T extends StructData>(
+	data: T[],
+	message?: string,
+	options?: {
+		omit?: (keyof T['data'])[];
+	}
+) => {
+	return viewTable({
+		clear: true,
+		message: message || 'View data',
+		options: data.map((d) => d.data),
+		omit: options?.omit as string[]
+	});
+};
+
 export const selectDataPipe = <S extends Struct>(
 	struct: S,
 	data: StructData<S['data']['structure'], S['data']['name']>[],
-	next?: Next
+	next?: Next,
+	options?: {
+		omit?: (keyof (S['data']['structure'] & typeof globalCols))[];
+	}
 ) =>
 	attemptAsync(async () => {
-		const res = (await selectData(data, `Select from ${struct.name}`)).unwrap();
+		const res = (await selectData(data, `Select from ${struct.name}`, options)).unwrap();
 		if (res === undefined) {
 			return doNext('No data selected', undefined, next);
 		}
@@ -165,9 +193,25 @@ otherwise dates will not work.
 				};
 			}
 
+			(
+				await Logs.log({
+					dataId: String(res.value.id),
+					struct: struct.name,
+					accountId: 'CLI',
+					type: 'create',
+					message: 'Data created from cli'
+				})
+			).unwrap();
+
 			return doNext('New data created', undefined, next);
 		}),
-	all: async <T extends Struct>(struct: T, next?: Next) =>
+	all: async <T extends Struct>(
+		struct: T,
+		next?: Next,
+		options?: {
+			omit?: (keyof (T['data']['structure'] & typeof globalCols))[];
+		}
+	) =>
 		attemptAsync(async () => {
 			const all = (
 				await struct
@@ -176,9 +220,15 @@ otherwise dates will not work.
 					})
 					.await()
 			).unwrap();
-			return selectDataPipe(struct, all, next);
+			return selectDataPipe(struct, all, next, options);
 		}),
-	fromProperty: async <T extends Struct>(struct: T, next?: Next) =>
+	fromProperty: async <T extends Struct>(
+		struct: T,
+		next?: Next,
+		options?: {
+			omit?: (keyof (T['data']['structure'] & typeof globalCols))[];
+		}
+	) =>
 		attemptAsync(async () => {
 			const res = (
 				await select({
@@ -210,9 +260,15 @@ otherwise dates will not work.
 					})
 					.await()
 			).unwrap();
-			return selectDataPipe(struct, data, next);
+			return selectDataPipe(struct, data, next, options);
 		}),
-	fromUniverse: async <T extends Struct>(struct: T, next?: Next) =>
+	fromUniverse: async <T extends Struct>(
+		struct: T,
+		next?: Next,
+		options?: {
+			omit?: (keyof (T['data']['structure'] & typeof globalCols))[];
+		}
+	) =>
 		attemptAsync(async () => {
 			const universes = (
 				await Universes.Universe.all({
@@ -240,9 +296,15 @@ otherwise dates will not work.
 					})
 					.await()
 			).unwrap();
-			return selectDataPipe(struct, data, next);
+			return selectDataPipe(struct, data, next, options);
 		}),
-	archived: async <T extends Struct>(struct: T, next?: Next) =>
+	archived: async <T extends Struct>(
+		struct: T,
+		next?: Next,
+		options?: {
+			omit?: (keyof (T['data']['structure'] & typeof globalCols))[];
+		}
+	) =>
 		attemptAsync(async () => {
 			const data = (
 				await struct
@@ -251,7 +313,7 @@ otherwise dates will not work.
 					})
 					.await()
 			).unwrap();
-			return selectDataPipe(struct, data, next);
+			return selectDataPipe(struct, data, next, options);
 		}),
 	clear: async <T extends Struct>(struct: T, next?: Next) =>
 		attemptAsync(async () => {
@@ -325,6 +387,16 @@ export const dataActions = {
 				};
 			}
 
+			(
+				await Logs.log({
+					dataId: String(data.id),
+					struct: data.struct.name,
+					accountId: 'CLI',
+					type: 'update',
+					message: 'Data updated from cli'
+				})
+			).unwrap();
+
 			return doNext('Data updated', undefined, next);
 		}),
 	delete: async (data: StructData, next?: Next) =>
@@ -338,6 +410,16 @@ export const dataActions = {
 
 				return doNext('Data deleted', undefined, next);
 			}
+
+			(
+				await Logs.log({
+					dataId: String(data.id),
+					struct: data.struct.name,
+					accountId: 'CLI',
+					type: 'delete',
+					message: 'Data deleted from cli'
+				})
+			).unwrap();
 
 			return doNext('Data not deleted', undefined, next);
 		}),
@@ -353,6 +435,16 @@ export const dataActions = {
 				return doNext('Data archived', undefined, next);
 			}
 
+			(
+				await Logs.log({
+					dataId: String(data.id),
+					struct: data.struct.name,
+					accountId: 'CLI',
+					type: 'archive',
+					message: 'Data archived from cli'
+				})
+			).unwrap();
+
 			return doNext('Data not archived', undefined, next);
 		}),
 	restore: async (data: StructData, next?: Next) =>
@@ -367,6 +459,16 @@ export const dataActions = {
 				return doNext('Data restored', undefined, next);
 			}
 
+			(
+				await Logs.log({
+					dataId: String(data.id),
+					struct: data.struct.name,
+					accountId: 'CLI',
+					type: 'restore',
+					message: 'Data restored from cli'
+				})
+			).unwrap();
+
 			return doNext('Data not restored', undefined, next);
 		}),
 	versionHistory: async (data: StructData, next?: Next) =>
@@ -374,79 +476,103 @@ export const dataActions = {
 			const versions = (await data.getVersions()).unwrap();
 			return selectVersionPipe(versions, next);
 		}),
-	addAttributes: async (data: StructData, next?: Next) =>
-		attemptAsync(async () => {
-			const current = data.getAttributes().unwrap();
-			terminal.log('Current attributes:', current);
+	// addAttributes: async (data: StructData, next?: Next) =>
+	// 	attemptAsync(async () => {
+	// 		const current = data.getAttributes().unwrap();
+	// 		terminal.log('Current attributes:', current);
 
-			const res = (
-				await prompt({
-					message: 'Enter new attributes separated by commas'
-				})
-			).unwrap();
+	// 		const res = (
+	// 			await prompt({
+	// 				message: 'Enter new attributes separated by commas'
+	// 			})
+	// 		).unwrap();
 
-			if (!res) {
-				return doNext('No attributes added', undefined, next);
-			}
+	// 		if (!res) {
+	// 			return doNext('No attributes added', undefined, next);
+	// 		}
 
-			const attributes = res.split(',').map((a) => a.trim());
-			const res2 = await data.addAttributes(...attributes);
+	// 		const attributes = res.split(',').map((a) => a.trim());
+	// 		const res2 = await data.addAttributes(...attributes);
 
-			if (res2.isErr()) {
-				terminal.error(res2.error);
-				return doNext('Failed to add attributes', res2.error, next);
-			}
+	// 		if (res2.isErr()) {
+	// 			terminal.error(res2.error);
+	// 			return doNext('Failed to add attributes', res2.error, next);
+	// 		}
 
-			return doNext('Attributes added', undefined, next);
-		}),
-	removeAttributes: async (data: StructData, next?: Next) =>
-		attemptAsync(async () => {
-			const current = data.getAttributes().unwrap();
-			terminal.log('Current attributes:', current);
+	// 		(await Logs.log({
+	// 			dataId: String(data.id),
+	// 			struct: data.struct.name,
+	// 			accountId: 'CLI',
+	// 			type: 'set-attributes',
+	// 			message: 'Attributes added from cli',
+	// 		})).unwrap();
 
-			const res = (
-				await prompt({
-					message: 'Enter attributes to remove separated by commas'
-				})
-			).unwrap();
+	// 		return doNext('Attributes added', undefined, next);
+	// 	}),
+	// removeAttributes: async (data: StructData, next?: Next) =>
+	// 	attemptAsync(async () => {
+	// 		const current = data.getAttributes().unwrap();
+	// 		terminal.log('Current attributes:', current);
 
-			if (!res) {
-				return doNext('No attributes removed', undefined, next);
-			}
+	// 		const res = (
+	// 			await prompt({
+	// 				message: 'Enter attributes to remove separated by commas'
+	// 			})
+	// 		).unwrap();
 
-			const attributes = res.split(',').map((a) => a.trim());
-			const res2 = await data.removeAttributes(...attributes);
+	// 		if (!res) {
+	// 			return doNext('No attributes removed', undefined, next);
+	// 		}
 
-			if (res2.isErr()) {
-				terminal.error(res2.error);
-				return doNext('Failed to remove attributes', res2.error, next);
-			}
+	// 		const attributes = res.split(',').map((a) => a.trim());
+	// 		const res2 = await data.removeAttributes(...attributes);
 
-			return doNext('Attributes removed', undefined, next);
-		}),
-	setAttributes: async (data: StructData, next?: Next) =>
-		attemptAsync(async () => {
-			const res = (
-				await prompt({
-					clear: true,
-					message: 'Enter new attributes separated by commas'
-				})
-			).unwrap();
+	// 		if (res2.isErr()) {
+	// 			terminal.error(res2.error);
+	// 			return doNext('Failed to remove attributes', res2.error, next);
+	// 		}
 
-			if (!res) {
-				return doNext('No attributes set', undefined, next);
-			}
+	// 		(await Logs.log({
+	// 			dataId: String(data.id),
+	// 			struct: data.struct.name,
+	// 			accountId: 'CLI',
+	// 			type: 'set-attributes',
+	// 			message: 'Attributes removed from cli',
+	// 		})).unwrap();
 
-			const attributes = res.split(',').map((a) => a.trim());
-			const res2 = await data.setAttributes(attributes);
+	// 		return doNext('Attributes removed', undefined, next);
+	// 	}),
+	// setAttributes: async (data: StructData, next?: Next) =>
+	// 	attemptAsync(async () => {
+	// 		const res = (
+	// 			await prompt({
+	// 				clear: true,
+	// 				message: 'Enter new attributes separated by commas'
+	// 			})
+	// 		).unwrap();
 
-			if (res2.isErr()) {
-				terminal.error(res2.error);
-				return doNext('Failed to set attributes', res2.error, next);
-			}
+	// 		if (!res) {
+	// 			return doNext('No attributes set', undefined, next);
+	// 		}
 
-			return doNext('Attributes set', undefined, next);
-		}),
+	// 		const attributes = res.split(',').map((a) => a.trim());
+	// 		const res2 = await data.setAttributes(attributes);
+
+	// 		if (res2.isErr()) {
+	// 			terminal.error(res2.error);
+	// 			return doNext('Failed to set attributes', res2.error, next);
+	// 		}
+
+	// 		(await Logs.log({
+	// 			dataId: String(data.id),
+	// 			struct: data.struct.name,
+	// 			accountId: 'CLI',
+	// 			type: 'set-attributes',
+	// 			message: 'Attributes set from cli',
+	// 		})).unwrap();
+
+	// 		return doNext('Attributes set', undefined, next);
+	// 	}),
 	setUniverse: async (data: StructData, next?: Next) =>
 		attemptAsync(async () => {
 			const universes = (
@@ -465,7 +591,7 @@ export const dataActions = {
 			).unwrap();
 
 			if (!res) {
-				return doNext('No universes selected', undefined, next);
+				return doNext('No universe selected', undefined, next);
 			}
 
 			const res2 = await data.setUniverse(res.id);
@@ -475,7 +601,32 @@ export const dataActions = {
 				return doNext('Failed to set universes', res2.error, next);
 			}
 
+			(
+				await Logs.log({
+					dataId: String(data.id),
+					struct: data.struct.name,
+					accountId: 'CLI',
+					type: 'set-universe',
+					message: 'Universes set from cli'
+				})
+			).unwrap();
+
 			return doNext('Universes set', undefined, next);
+		}),
+	viewLogs: async <T extends StructData>(data: T, next?: Next) =>
+		attemptAsync(async () => {
+			const logs = (
+				await Logs.Log.fromProperty('dataId', String(data.id), {
+					type: 'stream'
+				}).await()
+			).unwrap();
+
+			terminal.log(
+				'Logs:',
+				logs.map((l) => l.data)
+			);
+
+			return doNext('Logs viewed', undefined, next);
 		})
 };
 
@@ -519,6 +670,16 @@ export const versionActions = {
 				return doNext('Version restored', undefined, next);
 			}
 
+			(
+				await Logs.log({
+					dataId: String(version.data.dataId),
+					struct: version.struct.data.name,
+					accountId: 'CLI',
+					type: 'restore-version',
+					message: 'Version restored from cli'
+				})
+			).unwrap();
+
 			return doNext('Version not restored', undefined, next);
 		}),
 	delete: async (version: DataVersion<Blank, string>, next?: Next) =>
@@ -539,6 +700,16 @@ export const versionActions = {
 
 				return doNext('Version deleted', undefined, next);
 			}
+
+			(
+				await Logs.log({
+					dataId: String(version.data.dataId),
+					struct: version.struct.data.name,
+					accountId: 'CLI',
+					type: 'delete-version',
+					message: 'Version deleted from cli'
+				})
+			).unwrap();
 
 			return doNext('Version not deleted', undefined, next);
 		})

@@ -32,6 +32,7 @@ export namespace Account {
 	});
 
 	export type AccountData = StructData<typeof Account.data.structure>;
+	export type AccountArr = DataArr<typeof Account.data.structure>;
 
 	export const AccountNotification = new Struct({
 		name: 'account_notification',
@@ -49,8 +50,9 @@ export namespace Account {
 	});
 
 	export type AccountNotificationData = StructData<typeof AccountNotification.data.structure>;
+	export type AccountNotificationArr = DataArr<typeof AccountNotification.data.structure>;
 
-	const self = new SingleWritable(
+	export const self = new SingleWritable(
 		Account.Generator({
 			username: 'Guest',
 			// key: '',

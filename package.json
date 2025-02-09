@@ -26,7 +26,8 @@
 		"script": "npx vite-node ./scripts/index.ts",
 		"check:system": "pnpm run lint && pnpm run check && pnpm run test",
 		"system:check": "pnpm run check:system",
-		"build:email": "pnpm script mjml-batch"
+		"build:email": "pnpm script mjml-batch",
+		"backup": "pnpm script backup"
 	},
 	"devDependencies": {
 		"@chromatic-com/storybook": "^3.2.3",
