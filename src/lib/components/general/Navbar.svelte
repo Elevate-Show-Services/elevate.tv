@@ -22,7 +22,12 @@
 			>
 				<i class="material-icons"> menu </i>
 			</button>
-			<a class="navbar-brand" href="/home">{title}</a>
+			<a
+				class="
+					navbar-brand
+				"
+				href="/home">{title}</a
+			>
 		</div>
 		<div class="end">
 			<button
@@ -66,19 +71,6 @@
 
 <SideNav
 	id="pages"
-	sections={[
-		{
-			name: 'Home',
-			links: [
-				{
-					name: 'Home',
-					href: '/',
-					icon: 'home',
-					type: 'material-icons'
-				}
-			]
-		}
-	]}
 />
 
-<Notifications bind:notifs />
+<!-- <Notifications bind:notifs /> -->
