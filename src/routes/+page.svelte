@@ -7,6 +7,7 @@
 			let maxHeight = 0;
 			const els = el.querySelectorAll('.same-height');
 			els.forEach((el) => {
+				el.removeAttribute('style');
 				maxHeight = Math.max(maxHeight, el.clientHeight);
 			});
 
