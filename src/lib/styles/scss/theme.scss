@@ -1,14 +1,22 @@
 $white: #ffffff;
 
 $theme-colors: (
-	'light': #b6c2e2,  // Muted cool blue for subtle contrast
-	'dark': #18181b,  // Deep dark gray for backgrounds
-	'primary': #3ea8fc,  // Electric blue for main highlights
-	'secondary': #8c5ad8,  // Futuristic purple for accents
-	'info': #2be3e7,  // Bright cyan for information
-	'success': #34d399,  // Neon green for success
-	'warning': #fbbf24,  // Amber for warnings
-	'danger': #ef4444,  // Intense red for errors
+	'light': #b6c2e2,
+	// Muted cool blue for subtle contrast
+	'dark': #18181b,
+	// Deep dark gray for backgrounds
+	'primary': #3ea8fc,
+	// Electric blue for main highlights
+	'secondary': #8c5ad8,
+	// Futuristic purple for accents
+	'info': #2be3e7,
+	// Bright cyan for information
+	'success': #34d399,
+	// Neon green for success
+	'warning': #fbbf24,
+	// Amber for warnings
+	'danger': #ef4444,
+	// Intense red for errors
 	'accent': #ff00ff // Hot pink for cyberpunk aesthetics
 );
 
@@ -25,76 +33,80 @@ $theme-colors: (
 
 // Background layers
 :root {
-    --layer-1: #18181b;
-    --layer-2: #1f1f23;
-    --layer-3: #25252a;
-    --layer-4: #2d2d33;
-    --layer-5: #373740;
+	--layer-1: #18181b;
+	--layer-2: #1f1f23;
+	--layer-3: #25252a;
+	--layer-4: #2d2d33;
+	--layer-5: #373740;
 
-    --text-layer-1: #ffffff;
-    --text-layer-2: #e4e4e7;
-    --text-layer-3: #cfcfd4;
-    --text-layer-4: #b8b8bf;
-    --text-layer-5: #a1a1aa;
+	--text-layer-1: #ffffff;
+	--text-layer-2: #e4e4e7;
+	--text-layer-3: #cfcfd4;
+	--text-layer-4: #b8b8bf;
+	--text-layer-5: #a1a1aa;
 }
 
 // Layered backgrounds
 .layer-1 {
-    background-color: var(--layer-1);
-    color: var(--text-layer-1);
+	background-color: var(--layer-1);
+	color: var(--text-layer-1);
 }
 .layer-2 {
-    background-color: var(--layer-2);
-    color: var(--text-layer-2);
+	background-color: var(--layer-2);
+	color: var(--text-layer-2);
 }
 .layer-3 {
-    background-color: var(--layer-3);
-    color: var(--text-layer-3);
+	background-color: var(--layer-3);
+	color: var(--text-layer-3);
 }
 .layer-4 {
-    background-color: var(--layer-4);
-    color: var(--text-layer-4);
+	background-color: var(--layer-4);
+	color: var(--text-layer-4);
 }
 .layer-5 {
-    background-color: var(--layer-5);
-    color: var(--text-layer-5);
+	background-color: var(--layer-5);
+	color: var(--text-layer-5);
 }
 
 // Techy neon glow effects
 .btn-glow {
-    border-radius: 6px;
-    text-transform: uppercase;
-    font-weight: bold;
-    transition: all 0.3s ease-in-out;
-    &:hover {
-        filter: brightness(1.2);
-        box-shadow: 0 0 15px 3px rgba(255, 255, 255, 0.2);
-    }
+	border-radius: 6px;
+	text-transform: uppercase;
+	font-weight: bold;
+	transition: all 0.3s ease-in-out;
+	&:hover {
+		filter: brightness(1.2);
+		box-shadow: 0 0 15px 3px rgba(255, 255, 255, 0.2);
+	}
 }
 
 // Cyberpunk-style text glow
 .text-neon {
-    text-shadow: 0 0 5px #3ea8fc, 0 0 10px #3ea8fc;
+	text-shadow:
+		0 0 5px #3ea8fc,
+		0 0 10px #3ea8fc;
 }
 .text-glitch {
-    text-shadow: 2px 2px #8c5ad8, -2px -2px #2be3e7;
+	text-shadow:
+		2px 2px #8c5ad8,
+		-2px -2px #2be3e7;
 }
 
 // Border and card styling for a more sci-fi UI
 .card-tech {
-    background-color: var(--layer-3);
-    border: 1px solid var(--layer-4);
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+	background-color: var(--layer-3);
+	border: 1px solid var(--layer-4);
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 // Cyber grid pattern effect
 .grid-background {
-    background: repeating-linear-gradient(
-        0deg,
-        var(--layer-1),
-        var(--layer-1) 10px,
-        var(--layer-2) 10px,
-        var(--layer-2) 20px
-    );
+	background: repeating-linear-gradient(
+		0deg,
+		var(--layer-1),
+		var(--layer-1) 10px,
+		var(--layer-2) 10px,
+		var(--layer-2) 20px
+	);
 }

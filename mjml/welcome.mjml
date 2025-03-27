@@ -1,17 +1,35 @@
 <mjml>
-  <mj-head>
-    <mj-preview>Welcome to Our Mailing List, {{ name }}!</mj-preview>
-  </mj-head>
-  <mj-body>
-    <mj-section>
-      <mj-column>
-        <mj-text font-size="20px" font-weight="bold">Welcome to Our Mailing List!</mj-text>
-        <mj-text>We're excited to have you on board. Stay tuned for updates, exclusive content, and more.</mj-text>
-        <mj-button href="{{ url }}" background-color="#007bff" color="white" padding="10px 20px" border-radius="5px">Visit Our Website</mj-button>
-        <mj-text align="center" font-size="12px">
-          <mj-button href="{{ unsubscribe }}" background-color="#6c757d" color="white" padding="5px 10px" border-radius="3px" font-size="12px">Unsubscribe</mj-button>
-        </mj-text>
-      </mj-column>
-    </mj-section>
-  </mj-body>
+	<mj-head>
+		<mj-preview>Welcome to Our Mailing List, {{ name }}!</mj-preview>
+	</mj-head>
+	<mj-body>
+		<mj-section>
+			<mj-column>
+				<mj-text font-size="20px" font-weight="bold">Welcome to Our Mailing List!</mj-text>
+				<mj-text
+					>We're excited to have you on board. Stay tuned for updates, exclusive content, and
+					more.</mj-text
+				>
+				<mj-button
+					href="{{ url }}"
+					background-color="#007bff"
+					color="white"
+					padding="10px 20px"
+					border-radius="5px"
+					>Visit Our Website</mj-button
+				>
+				<mj-text align="center" font-size="12px">
+					<mj-button
+						href="{{ unsubscribe }}"
+						background-color="#6c757d"
+						color="white"
+						padding="5px 10px"
+						border-radius="3px"
+						font-size="12px"
+						>Unsubscribe</mj-button
+					>
+				</mj-text>
+			</mj-column>
+		</mj-section>
+	</mj-body>
 </mjml>
