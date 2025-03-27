@@ -1,0 +1,17 @@
+<mjml>
+  <mj-head>
+    <mj-preview>Welcome to Our Mailing List, {{ name }}!</mj-preview>
+    <mj-style inline="inline">
+      .button { background-color: #007bff; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; }
+    </mj-style>
+  </mj-head>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="20px" font-weight="bold">Welcome to Our Mailing List!</mj-text>
+        <mj-text>We're excited to have you on board. Stay tuned for updates, exclusive content, and more.</mj-text>
+        <mj-button href="{{ url }}" background-color="#007bff" color="white" padding="10px 20px" border-radius="5px">Visit Our Website</mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
