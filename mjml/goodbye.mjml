@@ -1,0 +1,28 @@
+<mjml>
+	<mj-head>
+		<mj-preview>Sorry to See You Go :(</mj-preview>
+		<mj-style inline="inline">
+			.button { background-color: #dc3545; color: white; padding: 10px 20px; border-radius: 5px;
+			text-decoration: none; }
+		</mj-style>
+	</mj-head>
+	<mj-body>
+		<mj-section>
+			<mj-column>
+				<mj-text font-size="20px" font-weight="bold">Sorry to See You Go</mj-text>
+				<mj-text
+					>You've been unsubscribed from our mailing list. If this was a mistake, you can
+					re-subscribe below.</mj-text
+				>
+				<mj-button
+					href="{{ resubscribe }}"
+					background-color="#007bff"
+					color="white"
+					padding="10px 20px"
+					border-radius="5px"
+					>Re-Subscribe</mj-button
+				>
+			</mj-column>
+		</mj-section>
+	</mj-body>
+</mjml>

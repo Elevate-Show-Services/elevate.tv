@@ -1,0 +1,50 @@
+:root {
+	--layer-0: #18181b;
+	--layer-1: #1f1f23;
+	--layer-2: #25252a;
+	--layer-3: #2d2d33;
+	--layer-4: #373740;
+	--layer-5: #43434d;
+
+	--text-layer-0: #ffffff;
+	--text-layer-1: #e4e4e7;
+	--text-layer-2: #cfcfd4;
+	--text-layer-3: #b8b8bf;
+	--text-layer-4: #a1a1aa;
+	--text-layer-5: #8b8b96;
+}
+
+.layer-0 {
+	background-color: var(--layer-0);
+	color: var(--text-layer-0);
+}
+
+.layer-1 {
+	background-color: var(--layer-1);
+	color: var(--text-layer-1);
+	border-radius: 3px;
+}
+
+.layer-2 {
+	background-color: var(--layer-2);
+	color: var(--text-layer-2);
+	border-radius: 3px;
+}
+
+.layer-3 {
+	background-color: var(--layer-3);
+	color: var(--text-layer-3);
+	border-radius: 3px;
+}
+
+.layer-4 {
+	background-color: var(--layer-4);
+	color: var(--text-layer-4);
+	border-radius: 3px;
+}
+
+.layer-5 {
+	background-color: var(--layer-5);
+	color: var(--text-layer-5);
+	border-radius: 3px;
+}
