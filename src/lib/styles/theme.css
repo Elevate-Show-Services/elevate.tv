@@ -1,3 +1,7 @@
 @import url('./scss/theme.scss');
 /* @import url('bootstrap/dist/css/bootstrap.min.css'); */
 /* @import url('./scss/colors.scss'); */
+
+.card {
+    border: 0px !important;
+}
