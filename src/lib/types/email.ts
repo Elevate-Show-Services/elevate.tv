@@ -14,6 +14,7 @@ export type Email = {
 'welcome': {
         name: string;
         url: string;
+        unsubscribe: string;
     };
 
 };
